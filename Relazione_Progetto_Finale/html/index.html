@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Relazione Luigi Marino</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+    
+        <center><img src="images/Logo-uniparthenope.gif" alt="LOGO PARTHENOPE" width="250" height="250"></center>
+       <center><h1>PROGRAMMAZIONE 1 E LAB. DI PROGRAMMAZIONE</h1></center>
+       <center><h2>RELAZIONE PROGETTO FINALE</h2></center>
+       <p> <b>NOME:</b> Luigi <br>
+           <b>COGNOME:</b> Marino <br>
+           <b>MATRICOLA:</b>0124002257 <br>
+           <b>AA:</b> 2020\21
+       </p>
+       <center><H3>TRACCE PROPOSTE ALL'ALUNNO</H3></center>
+        <p><b>1)Tiro al bersaglio</b><br>
+        Si vuole sviluppare un programma per la simulazione di un gioco di tiro a bersaglio.
+        Si suppone di avere 5 giocatori che si alternano nel tirare una freccetta verso un
+        bersaglio. Il bersaglio è formato da celle di diverso colore come nella seguente
+        figura.
+        Ad ogni colore è associato un punteggio: 6 rosso, 3 verde e 1 arancione. A ogni turno
+        un giocatore tira la sua freccetta che cade in una certa cella in modo casuale. Dopo il
+        turno di tutti i giocatori il punteggio viene assegnato solo al giocatore che ha la
+        freccetta più vicina al centro. In caso di parità si assegna lo stesso punteggio a tutti i
+        giocatori che effettuano il tiro più vicino al centro. Il gioco termina o quando uno dei giocatori è arrivato a 100 o quando sono
+        terminati 50 turni.</p>
+        <center><img src="images/tabellone.png" alt="TABELLONE FRECCETTE" width="200" height="200"></center><br><br>
+        
+        <p><b>2)Torneo di calcio</b><br>
+        Si vuole gestire un torneo di calcio tra 8 squadre. Inizialmente vengono considerati 88
+            giocatori identificati dal Cognome e Nome (anche solo lettere casuali). Si suppone che
+            ogni giocatore possa assumere qualsiasi ruolo in campo. Ad ogni giocatore viene
+            assegnato un numero casuale nell’intervallo [0,10]. In maniera casuale vengono create 8
+            squadre.
+            Il torneo viene simulato facendo scontrare due squadre alla volta. Ogni squadra vincitrice
+            si scontrerà con la squadra vincitrice di un’altra partita fino ad arrivare ad una singola
+            squadra vincitrice. 
+            Una partita viene vinta da una squadra secondo la seguente regola:
+            <ul>
+                <li>La somma dei pesi di una squadra moltiplicata per un numero casuale
+                    nell’intervallo [0, 1] è maggiore della corrispondente operazione sull’altra
+                    squadra (usare un algoritmo divide ed impera ricorsivo per la somma dei pesi
+                    delle single squadre)</li>
+                    <li>Il processo si ripete finché non si ottiene un vincitore
+                        Simulare 100 volte il torneo e ritornare l’elenco completo delle squadre in ordine
+                        decrescente di vincite. Si stampino i nomi dei giocatori della squadra che ha vinto di più.
+               </li>
+            </ul>
+            <center><img src="images/football.png" alt="LOGO TORNEO" width="300" height="200"></center><br><br><br>
+            <center><h3>SOLUZIONI</h3>
+            <p><b>TIRO AL BERSAGLIO</b><br></center>
+                <b>ANALISI DELL'ALGORITMO</b><br>
+                L'algoritmo in questione presenta tre principali "blocchi" da risolvere, il primo in questione è la simulazione dei tiri da far effettuare ai cinque giocatori che si scontrano, il secondo problema è quello di dover tenere nota del giocatore che totalizza più punti mentre il terzo problema
+                consiste nell'assegnazione a più giocatori dei punti se effettuano lo stesso punteggio (inteso come punteggio più alto effettuato da due o più giocatori per quel tiro).<br><br>
+                <b>CODICE SORGENTE (I COMMENTI SONO PRESENTI NEI FILE .C, .H)</b><br>
+                <div class="spoiler"><div class="spoilerheader">
+                    <input type="button" class="spoilerbutton" value="Header" onclick="n = this.parentNode.parentNode.lastChild;if(n.style.display == 'none') {n.style.display = 'block';} else {n.style.display = 'none';} return false;"/></div>
+                    <div class="spoilerbody" style="display: none">
+                        #include "stdlib.h"<br>
+                        #include "time.h"<br>
+                        #include "stdio.h"<br>
+                        #define rosso 6<br>
+                        #define arancione 1<br>
+                        #define verde 3<br>
+                        
+                        #ifndef PROGETTO_FINALE_ESAME_FIRSTEXERCISE_H<br>
+                        #define PROGETTO_FINALE_ESAME_FIRSTEXERCISE_H<br>
+                        
+                        struct giocatori{<br>
+                            char *nome;<br>
+                            int tiro;<br>
+                            int punti;<br>
+                        };<br>
+                        
+                        typedef struct giocatori Giocatori;<br>
+                        
+                        int tabellone[7][5];<br>
+                        <br>
+
+                        void tiro(int *);<br>
+                        void mappatura_tabellone(int [7][5]);<br>
+                        void conteggio_tiri(Giocatori [], int *, int *);<br>
+                        <br>
+                
+                        #endif //PROGETTO_FINALE_ESAME_FIRSTEXERCISE_H<br>
+                        </div></div>
+                    <hr />
+                    <div class="spoiler"><div class="spoilerheader">
+                    <input type="button" class="spoilerbutton" value="Implementazione" onclick="n = this.parentNode.parentNode.lastChild;if(n.style.display == 'none') {n.style.display = 'block';} else {n.style.display = 'none';} return false;"/></div>
+                    <div class="spoilerbody" style="display: none">
+                        #include "firstexercise.h"<br>
+                        <br>
+                
+                        void  tiro(int *pt_tiro) {<br>
+                            int i,j;<br>
+                            i = rand()%7;<br>
+                            j = rand()%5;<br>
+                            *pt_tiro = tabellone[i][j];<br>
+                        }<br>
+                        <br>
+                        void mappatura_tabellone(int tab[7][5]) {<br>
+                            for (int i = 0; i < 7; ++i) {<br>
+                                for (int j = 0; j < 5; ++j) {<br>
+                                    tabellone[i][j] = arancione;<br>
+                                }<br>
+                            }<br>
+                            <br>
+                            for (int i = 2; i < 5; ++i) {<br>
+                                for (int j = 1; j < 4; ++j) {<br>
+                                    tabellone[i][j] = verde;<br>
+                                }<br>
+                            }<br>
+                         <br>
+                            tabellone[3][2] = rosso;<br>
+                        }<br>
+                        <br>
+                        
+                        void conteggio_tiri(Giocatori players[], int *max_globale, int *max) {<br>
+                            int tiri_tot = 0;<br>
+                            while (players[*max_globale].punti <= 100 && tiri_tot < 100) {<br>
+                                <br>
+                                <br>
+                                for (int i = 0; i < 5; ++i) {<br>
+                                    tiro(&players[i].tiro);<br>
+                                }<br>
+                                <br>
+                                for (int i = 0; i < 5; ++i) {<br>
+                                    if (players[i].tiro > players[*max].tiro)<br>
+                                        *max = i;<br>
+                                }<br>
+                                <br>
+                                for (int i = 0; i < 5; ++i) {<br>
+                                    if (players[*max].tiro == players[i].tiro) {<br>
+                                        players[i].punti+=players[i].tiro;<br>
+                                    }<br>
+                                }
+                                <br>
+                                    for (int i = 0; i < 5; ++i) {<br>
+                                    if (players[i].punti > players[*max_globale].punti)<br>
+                                        *max_globale = i;<br>
+                                }<br>
+                        
+                                tiri_tot++;<br>
+                            }<br>
+                        
+                        }<br></div></div>
+                        <hr />
+                        <div class="spoiler"><div class="spoilerheader">
+                            <input type="button" class="spoilerbutton" value="Main" onclick="n = this.parentNode.parentNode.lastChild;if(n.style.display == 'none') {n.style.display = 'block';} else {n.style.display = 'none';} return false;"/></div>
+                            <div class="spoilerbody" style="display: none">
+                                #include "firstexercise.h"<br>
+                                int main() {<br>
+                                    srand(time(NULL));<br>
+                                    Giocatori players[5];<br>
+                                    players[0].nome = "Giocatore1";<br>
+                                    players[1].nome = "Giocatore2";<br>
+                                    players[2].nome = "Giocatore3";<br>
+                                    players[3].nome = "Giocatore4";<br>
+                                    players[4].nome = "Giocatore5";<br>
+                                    int max = 0;<br>
+                                    int max_globale = 0;<br>
+                                    int scelta = 10;<br>
+                                    <br>
+                                    while (scelta!=3) {<br>
+                                        printf("Benvenuto nel gioco delle freccette\n1)Inizia a giocare\n2)Regolamento\n3)Esci\n");<br>
+                                        scanf("%d",&scelta);<br><br>
+                                    switch (scelta) {<br>
+                                        case 1:<br>
+                                        
+                                        for (int i = 0; i < 5; ++i) {<br>
+                                                players[i].punti = 0;<br>
+                                            }<br>
+                                            
+                                
+                                            
+                                            mappatura_tabellone(tabellone);<br>
+                                            conteggio_tiri(players, &max_globale, &max);<br>
+                                            
+                                            printf("Il vincitore e' %s con un punteggio di %d!\n", players[max_globale].nome, players[max_globale].punti);<br>
+                                            system("pause");<br>
+                                            break;<br>
+                                            <br>
+                                        case 2:<br>
+                                            printf("Ogni giocatore effettua il suo lancio e viene assegnato il punteggio al giocatore con il lancio piu' vicino al centro.\nSe il punteggio piu' alto si ripete, viene assegnato ai corrispettivi giocatori il punteggio massimo.\n");<br>
+                                            printf("Il primo giocatore che arriva a 100 punti e' il vincitore, altrimenti, al termine di 100 turni automaticamente\nverra' scelto un vincitore in base al punteggio.\n");<br>
+                                            system("pause");<br>
+                                            break;<br>
+                                            <br>
+                                        case 3:<br>
+                                            return 0;<br>
+                                            <br>
+                                        default:<br>
+                                            printf("Operazione non consentita.\n");<br>
+                                    }<br>
+                                    }<br>
+                                    
+                                    }</div></div>
+                                    </p><hr />
+                                    <b>CREAZIONE DELLA STRUCT GIOCATORE</b><br><br>
+                                    <img src="images/struct 1.PNG" alt="STRUCT GIOCATORE"><br>
+                                    La struct giocatore contiene un puntatore a caratteri, il <b>nome</b>, una variabile di tipo intero che corrisponde al <b>tiro</b> per ogni turno e un ultima variabile di tipo intero che corrisponde al totale dei <b>punti</b> che vengono assegnati (se assegnati)<br><br>
+                        
+
+                                    <b>ANALISI DELLE FUNCTION</b><br><br>
+                                    FUNZIONE MAPPATURA TABELLONE<br>
+                                    <img src="images/funzionemappatura.PNG" alt="MAPPATURA TABELLONE"> <br>
+                                    La funzione si occupa della mappatura del tabellone, tramite due cicli for innestati andiamo a determinare il punteggio che si vuole ottenere quando la freccetta colpisce un determinato punto del tabellone, le assegnazioni sono fatte tramite delle DEFINE.<br><br>
+                                    FUNZIONE TIRO<br>
+                                    <img src="images/funzionetiro.PNG" alt="FUNZIONE TIRO"><br>
+                                    La funzione tiro prende in input un puntatore e determina due indici tramite delle rand (che generano due numeri in un intervallo chiuso [0,6] e [0,4]) ed assegnano a quel determinato tiro il punteggio corrispondente alla posizione del tabellone, mappato precedentemente.<br><br>
+                                    FUNZIONE CONTEGGIO TIRI<br>
+                                    <img src="images/funzioneconteggiotiri.PNG" alt="CONTEGGIO TIRI"><br>
+                                    Al primo passo di questa funzione andiamo a richiamare la funzione tiro all'interno del ciclo for e passiamo come parametro la variabile punti contenuta all'interno della struct giocatore.<br>
+                                    Al secondo passo andiamo a determinare tramite una variabile max inizializzata a zero quale giocatore ha effettuato il tiro più alto, tramite questo ciclo andremo a prendere nota solo di un solo giocatore, anche se ci possono essere più punteggi uguali.<br>
+                                    Grazie al terzo passo andiamo a fare dei confronti tra il tiro più alto effettuato e tutti i giocatori, tenendo nota anche dello stesso giocatore che ha totalizzato quel punteggio e andiamo ad assegnare ai punti totali dei giocatori tale punteggio.<br>
+                                    L'ultimo passo della function è fondamentale per poter determinare il vincitore e per poter tener testa ad ogni iterazione del primo classificato, grazie ad una variabile max_globale inizializzata a zero e messa a confronto con tutti i punti totalizzati dai giocatori nel complesso ad ogni iterazione, andiamo ad assegnare a max_globale l'indice del giocatore che ha più punti di tutti.<br>
+                                    Il tutto è racchiuso all'interno di un ciclo while per rispettare la traccia, la richiesta era infatti quella di determinare il vincitore una volta effettuati cento tiri oppure quando uno dei giocatori è arrivato a 100 punti.<br><br>
+                                    <b>SOLUZIONE FINALE</b><br><br>
+                                    L'avvio del programma si presenta in questo modo:<br>
+                                    <img src="images/avviotiroalbersaglio.PNG" alt="AVVIO DEL PROGRAMMA"><br>
+                                    Selezionando la prima opzione si avvierà il programma e verranno effettuati i tiri, con il conteggio dei punti totalizzati ad ogni tiro, di seguito tre printscreen con diversi vincitori e diverse situazioni:<br>
+                                    <div class="spoiler"><div class="spoilerheader">
+                                        <input type="button" class="spoilerbutton" value="PRINTSCREEN 1" onclick="n = this.parentNode.parentNode.lastChild;if(n.style.display == 'none') {n.style.display = 'block';} else {n.style.display = 'none';} return false;"/></div>
+                                        <div class="spoilerbody" style="display: none">
+                                            <img src="images/printscreen1conclassifica.PNG" alt="PRINTSCREEN 1-1"><br>
+                                            In questo esempio possiamo vedere come in 87 turni il giocatore 5 si aggiudica la vittoria, inoltre possiamo anche vedere come si aggiorna la classifica ad ogni tiro.<br>
+                                            </div></div>
+                                        <hr />
+                                        <div class="spoiler"><div class="spoilerheader">
+                                        <input type="button" class="spoilerbutton" value="PRINTSCREEN 2" onclick="n = this.parentNode.parentNode.lastChild;if(n.style.display == 'none') {n.style.display = 'block';} else {n.style.display = 'none';} return false;"/></div>
+                                        <div class="spoilerbody" style="display: none">
+                                            <img src="images/printscreen2conclassifica.PNG" alt="PRINTSCREEN 1-2"><br>
+                                            In questo particolare esempio, precisamente ai turni 78 e 79 possiamo vedere come ad entrambi i giocatori in questione (<b>1 e 5</b>) (<b>1 e 2</b>) vengono assegnati 3 punti, siccome entrambi hanno totalizzato quel punteggio.<br>
+                                            </div></div>
+                                            <hr />
+                                            <div class="spoiler"><div class="spoilerheader">
+                                                <input type="button" class="spoilerbutton" value="PRINTSCREEN 3" onclick="n = this.parentNode.parentNode.lastChild;if(n.style.display == 'none') {n.style.display = 'block';} else {n.style.display = 'none';} return false;"/></div>
+                                                <div class="spoilerbody" style="display: none">
+                                                    <img src="images/printscreen3conclassifica.PNG" alt="PRINTSCREEN 1-3"><br>
+                                                    In questo caso il vincitore della partita è il giocatore 1 dopo 88 turni giocati.
+
+                                                    </div></div>
+                                                        </p><hr />
+                                                        REGOLAMENTO<br>
+                                                        <img src="images/regolamento 1.PNG" alt="REGOLAMENTO"><br>
+                                                        <br><br>
+                                                        <center><b>TORNEO DI CALCIO</b></center><br>
+
+                                                        <b>ANALISI DELL'ALGORITMO</b><br>
+                                                        L'algoritmo torneo di calcio richiede una particolare attenzione su due problemi interni, il primo obiettivo è quello di generare e creare le squadre e i giocatori in modo totalmente casuale, mentre un attenzione particolare cade nella creazione della funzione che si occuperà
+                                                        di calcolare quale squadrà vince e con quale si dovrà scontrare successivamente. <br><br>
+                                                        <b>CODICE SORGENTE (I COMMENTI SONO PRESENTI NEI FILE .C, .H)</b><br>
+                                                        <div class="spoiler"><div class="spoilerheader">
+                                                            <input type="button" class="spoilerbutton" value="Header" onclick="n = this.parentNode.parentNode.lastChild;if(n.style.display == 'none') {n.style.display = 'block';} else {n.style.display = 'none';} return false;"/></div>
+                                                            <div class="spoilerbody" style="display: none">
+                                                                #include "stdio.h" <br>
+                                                                #include "string.h"<br>
+                                                                #include "time.h" <br>
+                                                                #include "stdlib.h" <br>
+                                                                #ifndef SECONDO_ESERCIZIO_PROGETTO_FINALE_SECONDEXERCISE_H<br>
+                                                                #define SECONDO_ESERCIZIO_PROGETTO_FINALE_SECONDEXERCISE_H<br>
+                                                                int somma_pesi_ricDI(int [], int ,int );<br><br>
+                                                                
+                                                                struct giocatore{<br>
+                                                                    char nome;<br>
+                                                                    char cognome;<br>
+                                                                    int numero_maglia;<br>
+                                                                    int peso;<br>
+                                                                };<br><br>
+                                                                
+                                                                struct squadra {<br>
+                                                                    int n_squadra;<br>
+                                                                    struct giocatore giocatori[11];<br>
+                                                                    int vittorie;<br>
+                                                                    int peso;<br>
+                                                                };<br>
+                                                                typedef struct giocatore Giocatore;<br>
+                                                                typedef struct squadra Squadre;<br><br>
+                                                                
+                                                                void crea_squadre(Squadre []);<br>
+                                                                void calcola_pesi(int [],Squadre []);<br>
+                                                                void ordinamento_per_inserimento(Squadre [], int );<br>
+                                                                int appartiene(Giocatore [], int );<br>
+                                                                void scontri(Squadre [], int, Squadre []);<br><br>
+                                                                
+                                                                
+                                                                
+                                                                #endif //SECONDO_ESERCIZIO_PROGETTO_FINALE_SECONDEXERCISE_H
+                                                            
+                                                               
+                                                                
+                                                                </div></div>
+                                                            <hr />
+                                                            <div class="spoiler"><div class="spoilerheader">
+                                                            <input type="button" class="spoilerbutton" value="Implementazione" onclick="n = this.parentNode.parentNode.lastChild;if(n.style.display == 'none') {n.style.display = 'block';} else {n.style.display = 'none';} return false;"/></div>
+                                                            <div class="spoilerbody" style="display: none">
+                                                                #include "secondexercise.h"<br><br>
+
+                                                                int somma_pesi_ricDI(int a[], int primo, int  ultimo) {<br>
+                                                                    int mediano;<br>
+                                                                    if (primo==ultimo)<br>
+                                                                        return a[primo];<br>
+                                                                    else {<br>
+                                                                        mediano = (primo + ultimo)/2;<br>
+                                                                        return<br>
+                                                                        somma_pesi_ricDI(a, primo, mediano) + somma_pesi_ricDI(a, mediano +1,ultimo);<br>
+                                                                    }<br>
+                                                                }<br><br>
+                                                                
+                                                                
+                                                                void crea_squadre(Squadre teams[]) {<br>
+                                                                    for (int i = 0; i < 8; ++i) {<br>
+                                                                        teams[i].n_squadra = i + 1;<br>
+                                                                        teams[i].vittorie = 0;<br>
+                                                                        for (int j = 0; j < 11; ++j) {<br>
+                                                                            teams[i].giocatori[j].nome = 'A' + (rand() % 26);<br>
+                                                                            teams[i].giocatori[j].cognome = 'A' + (rand() % 26);<br>
+                                                                            teams[i].giocatori[j].peso = 60 + rand()%(96-60);<br>
+                                                                            teams[i].giocatori[j].numero_maglia = 100;<br>
+                                                                            int k = 0;<br>
+                                                                            while (k<1) { <br>
+                                                                                int tmp = rand()%11;<br>
+                                                                                if (!appartiene(teams[i].giocatori,tmp)) {<br>
+                                                                                    k++;<br>
+                                                                                    teams[i].giocatori[j].numero_maglia = tmp;<br>
+                                                                                }<br>
+                                                                            }<br>
+                                                                            }<br>
+                                                                        }<br>
+                                                                    }<br><br>
+                                                                
+                                                                
+                                                                void calcola_pesi(int pesi_squadra[], Squadre teams[]) {<br>
+                                                                    for (int i = 0; i < 8; ++i) {<br>
+                                                                        for (int j = 0; j < 11; ++j) {<br>
+                                                                            pesi_squadra[j] = teams[i].giocatori[j].peso;<br>
+                                                                        }<br>
+                                                                        teams[i].peso = somma_pesi_ricDI(pesi_squadra, 0, 10);<br>
+                                                                    }<br>
+                                                                }<br><br>
+                                                                
+                                                                void ordinamento_per_inserimento(Squadre a[], int n){<br>
+                                                                
+                                                                    int i,j;<br>
+                                                                    Squadre el_da_ins;<br>
+                                                                
+                                                                    for (i=1;i<n;i++)<br>
+                                                                    {<br>
+                                                                        j = i-1;<br>
+                                                                        el_da_ins = a[i];<br>
+                                                                
+                                                                        while (j>=0 && el_da_ins.vittorie>a[j].vittorie)<br>
+                                                                        {<br>
+                                                                            a[j+1] = a[j];<br>
+                                                                            j--;<br>
+                                                                        }<br>
+                                                                        a[j+1] = el_da_ins;<br>
+                                                                    }<br>
+                                                                }<br><br>
+                                                                
+                                                                int appartiene(Giocatore arr[], int chiave) {<br>
+                                                                    for (int i = 0; i < 11; ++i) {<br>
+                                                                        if (chiave==arr[i].numero_maglia)<br>
+                                                                            return 1;<br>
+                                                                    }<br>
+                                                                    return 0;<br>
+                                                                }<br><br>
+                                                                
+                                                                
+                                                                
+                                                                void scontri(Squadre pesi[],int ind, Squadre copia[]) {<br>
+                                                                    int peso1 = 0, peso2 = 0, cont = 0;<br>
+                                                                    <br>
+                                                                    for (int i = 0; i < ind; i+=2) {<br>
+                                                                        peso1 = pesi[i].peso*(rand()/(double)RAND_MAX);<br>
+                                                                        peso2 = pesi[i+1].peso*(rand()/(double)RAND_MAX);<br>
+                                                                        if (peso1>peso2)<br>
+                                                                            copia[cont] = pesi[i];<br>
+                                                                         else<br>
+                                                                            copia[cont] = pesi[i+1];<br>
+                                                                        cont++;<br>
+                                                                    }<br>
+                                                                }<br><br>
+                                                
+                                                                </div></div>
+                                                                <hr />
+                                                                <div class="spoiler"><div class="spoilerheader">
+                                                                    <input type="button" class="spoilerbutton" value="Main" onclick="n = this.parentNode.parentNode.lastChild;if(n.style.display == 'none') {n.style.display = 'block';} else {n.style.display = 'none';} return false;"/></div>
+                                                                    <div class="spoilerbody" style="display: none">
+                                                                        #include "secondexercise.h" <br>
+
+                                                                        int main() {<br>
+                                                                            srand(time(NULL));<br>
+                                                                            Squadre teams[8];<br>
+                                                                            int pesi_squadra[11] = {0};<br>
+                                                                            Squadre quarti[4];<br>
+                                                                            Squadre semifinale[2];<br>
+                                                                            Squadre finalista[1];<br><br>
+                                                                        
+                                                                        
+                                                                            for (int i = 0; i < 8; ++i) {<br>
+                                                                                teams[i].n_squadra = i + 1;<br>
+                                                                                teams[i].vittorie = 0;<br>
+                                                                            }<br><br>
+                                                                        
+                                                                            crea_squadre(teams);<br>
+                                                                            calcola_pesi(pesi_squadra,teams);<br><br>
+                                                                        
+                                                                            int giocate_tot = 0;<br>
+                                                                            while (giocate_tot<100){<br><br>
+                                                                                
+                                                                                scontri(teams,8,quarti);<br>
+                                                                                scontri(quarti,4,semifinale);<br>
+                                                                                scontri(semifinale,2,finalista);<br>
+                                                                                <br>
+                                                                                for (int i = 0; i < 8; ++i) {<br>
+                                                                                    if (finalista[0].n_squadra==teams[i].n_squadra)<br>
+                                                                                        teams[i].vittorie++;<br>
+                                                                                }<br>
+                                                                            giocate_tot++;<br>
+                                                                        }<br>
+                                                                            ordinamento_per_inserimento(teams,8);<br><br>
+
+                                                                    
+                                                                            printf("CLASSIFICA TORNEO:\n");<br>
+                                                                            for (int i = 0; i < 8; ++i) {<br>
+                                                                                printf("%d) Squadra %d - Vittorie : %d - Peso : %d\n", i+1,teams[i].n_squadra, teams[i].vittorie, teams[i].peso);<br>
+                                                                            }<br>
+                                                                            printf("\nFORMAZIONE DELLA SQUADRA VINCENTE (SQUADRA %d) :\n", teams[0].n_squadra);<br><br>
+                                                                        
+                                                                            for (int i = 0; i < 11; ++i) {<br>
+                                                                                printf("Nome: %c\t Cognome: %c\tNumero Maglia: %d\tPeso: %d\n", teams[0].giocatori[i].nome, teams[0].giocatori[i].cognome, teams[0].giocatori[i].numero_maglia, teams[0].giocatori[i].peso);<br>
+                                                                        
+                                                                            }<br>
+                                                                        
+                                                                        
+                                                                        
+                                                                            return 0;<br>
+                                                                        }<br>  
+                                                                        
+                                                                       </div></div>
+                                                                            </p><hr />
+                                                                            <b>CREAZIONE DELLE STRUCT GIOCATORE E SQUADRA</b><br><br>
+                                                                            STRUCT GIOCATORE <br>
+                                                                            <img src="images/STRUCT2-1.PNG" alt="STRUCT GIOCATORE"><br>
+                                                                            STRUCT SQUADRA <br>
+                                                                            <img src="images/struct2-2.PNG" alt="STRUCT TEAM"><br><br>                                                                
+                                        
+                                                                            <b>ANALISI DELLE FUNCTION</b><br><br>
+                                                                            FUNZIONE SOMMA RICORSIVA CON DIVIDE ET IMPERA <br>
+                                                                            <img src="images/funzionesommapesiric.PNG" alt="FUNZIONE SOMMA PESI RICORSIVA CON DIVIDE ET IMPERA"> <br><br>
+                                                                            FUNZIONE APPARTIENE <br>
+                                                                            <img src="images/funzioneappartiene.PNG" alt="FUNZIONE APPARTIENE"> <br>
+                                                                            Prende in input un array di tipo Giocatore e una chiave, verificando poi se la chiave è presente all'interno dell'array. <br> <br>
+                                                                            FUNZIONE ORDINAMENTO PER INSERIMENTO <br>
+                                                                            <img src="images/funzioneordinamento.PNG" alt="FUNZIONE ORDINAMENTO PER INSERIMENTO"><br>
+                                                                            Una funzione che ordina gli elementi di un array di tipo Squadra in senso decrescente. <br> <br>
+                                                                            FUNZIONE CREA SQUADRE<br>
+                                                                            <img src="images/funzionecreasquadre.PNG" alt="CREAZIONE SQUADRE"> <br>
+                                                                            La funzione prende in input un array di tipo Squadre ed assegna casualmente una lettera per il nome, una per il cognome e un numero casuale da 0 a 10 senza ripetizioni per ogni giocatore di una squadra.<br><br>
+                                                                            FUNZIONE CALCOLA PESI<br>
+                                                                            <img src="images/funzionecalcolapesi.PNG" alt="FUNZIONE CALCOLA PESI"><br>
+                                                                            Questa funzione richiama la funzione somma di un array (un array che contiene i pesi di una singola squadra) ricorsiva per mettere all'interno di un array (che conterrà la somma dei pesi di ogni squadra) il risultato della function.<br><br>
+                                                                            FUNZIONE SCONTRI<br>
+                                                                            <img src="images/funzionescontri.PNG" alt="FUNZIONE SCONTRI"><br>
+                                                                            La funzione scontri prende in input due array e un intero che determina il size da utilizzare all'interno del ciclo for. <br>
+                                                                            Sono stati creati tre array di tipo Squadra che permettono di tener nota dei vincitori di ogni scontro effettuato. Al primo passo inseriamo come input tutti i pesi delle squadre e andiamo ad inserirli nell'array Quarti [4], al secondo passo la funzione viene richiamata e prenderà in input l'array quarti e andrà a determinare i
+                                                                            vincitori inserendoli nell'array Semifinale[2], infine la funzione viene richiamata l'ultima volta per determinare il vincitore e viene aggiunto all'interno dell'array Finalista[1] la squadra vincente. <br>
+                                                                            La funzione verrà richiamata tre volte (per cento tornei) all'interno del main per poter permettere di stabilire il vincitore. <br> <br>
+                                                                
+                                                                            <b>SOLUZIONE FINALE</b><br><br>
+                                                                            <b>FUNZIONAMENTO</b><br>
+                                                                            L'ALGORITMO DI BASE CREA IN MODO TOTALMENTE RANDOMICO DELLE SQUADRE TRAMITE L'ASSEGNAZIONE DI 11 GIOCATORI DETERMINATI DA UN NOME, UN COGNOME, UN PESO E IL NUMERO DELLA MAGLIA, UNICO PER OGNUNO DI LORO ALL'INTERNO DELLA SQUADRA <br>
+                                                                            AVVIANDO IL PROGRAMMA SI AVRA' DIRETTAMENTE LA FINE DELL'ALGORITMO CON L'ESECUZIONE SENZA ALCUN PRINT, BASTERA' TOGLIERE I COMMENTI AI VARI PRINT ALL'INTERNO DEL MAIN PER POTER TENER TRACCIA DI TUTTI E CENTO I TORNEI CHE VERRANNO EFFETTUATI <br>
+                                                                            TRAMITE L'UTILIZZO DI VARIE FUNCTION RIUSCIAMO A CREARE IN MODO RANDOMICO 8 SQUADRE DA 11 GIOCATORI, OGNUNO DEI QUALI CON DELLE CARATTERISTICHE, TRA CUI IL NUMERO DI MAGLIA, UNICO PER OGNUNO DI LORO. <br>
+                                                                            IL FUNZIONAMENTO VERO E PROPRIO DEL PROGRAMMA AVVIENE GRAZIE ALLA FUNCTION SCONTRI CHE PERMETTE DI DECRETARE IL VINCITORE DI OGNI TORNEO, IL TUTTO ALL'INTERNO DI UN WHILE CHE GESTISCE IL NUMERO DI TORNEI EFFETTUATI. <br>
+                                                                            LE FUNCTION ANALIZZATE SONO RICHIAMATE TUTTE. <br><br>
+
+                                                                            <b>TEST DI ESECUZIONE</b><br>
+                                                                            Avviando il programma inizierà il torneo e vi saranno ad ogni torneo comunicati i vincitori di ogni partita, fino al vincitore del torneo intero. <br>
+                                                                            Alla fine inoltre verrà stilata la classifica totale in ordine decrescente e verrà stampata la formazione della squadra con più vittorie su 100 tornei effettuati.<br><br>
+                                                                            <div class="spoiler"><div class="spoilerheader">
+                                                                                <input type="button" class="spoilerbutton" value="PRINTSCREEN 1" onclick="n = this.parentNode.parentNode.lastChild;if(n.style.display == 'none') {n.style.display = 'block';} else {n.style.display = 'none';} return false;"/></div>
+                                                                                <div class="spoilerbody" style="display: none">
+                                                                                    <img src="images/printscreen2-1conclassifica.PNG" alt="PRINTSCREEN 2-1"><br>
+                                                                                    Nell'immagine possiamo notare come il vincitore di quel torneo è la squadra numero 8, ma nonostante ciò il vincitore totale resta la squadra 6, in quanto vincitrice di 18 tornei.<br>
+                                                                                    </div></div>
+                                                                                <hr />
+                                                                                <div class="spoiler"><div class="spoilerheader">
+                                                                                <input type="button" class="spoilerbutton" value="PRINTSCREEN 2" onclick="n = this.parentNode.parentNode.lastChild;if(n.style.display == 'none') {n.style.display = 'block';} else {n.style.display = 'none';} return false;"/></div>
+                                                                                <div class="spoilerbody" style="display: none">
+                                                                                    <img src="images/printscreen2-2conclassifica.PNG" alt="PRINTSCREEN 2-2"><br>
+                                                                                   Nel secondo test di esecuzione possiamo notare come la squadra numero 7, vincitrice di 23 tornei si aggiudica la vittoria con un peso squadra di 852 kg.<br>
+                                                                                    </div></div>
+                                                                                    <hr />
+                                                                                    <div class="spoiler"><div class="spoilerheader">
+                                                                                        <input type="button" class="spoilerbutton" value="PRINTSCREEN 3" onclick="n = this.parentNode.parentNode.lastChild;if(n.style.display == 'none') {n.style.display = 'block';} else {n.style.display = 'none';} return false;"/></div>
+                                                                                        <div class="spoilerbody" style="display: none">
+                                                                                            <img src="images/printscreen2-3conclassifica.PNG" alt="PRINTSCREEN 2-3"><br>
+                                                                                            Nell'ultimo print-screen, la squadra vincitrice dell'ultimo torneo aggiunge un altra vittoria al totale e vince anche l'intera competizione basata su cento tornei. <br>
+                                                                                            
+                                
+                                                                                            </div></div>
+                                                                                                </p><hr />
+                                                                                              
+                                                        
+
+
+
+
+
+                                    
+                                   
+                    
+
+
+
+
+
+
+                </p>
+    </body>
+</html>
